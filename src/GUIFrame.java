@@ -1,16 +1,16 @@
 import javax.swing.*;
-import java.awt.*;
 
-public class GUIFrame extends Frame {
+public class GUIFrame extends JFrame {
     GameControl GameControl;
     public GUIFrame(GameControl pGameControl){
         GameControl = pGameControl;
-        this.setTitle("ArmA Guessr");
-        this.add(GameControl.getGameGUI());
-        this.setSize(1500,1000);
-        this.setResizable(false);
-        this.setLayout(null);
-        this.setVisible(true);
-        this.setLocationRelativeTo(null);
+        setTitle("ArmA Guessr");
+        add(new GameGUI());
+        setSize(1350,850);
+        setResizable(false);
+        setLayout(null);
+        setVisible(true);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }
