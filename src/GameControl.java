@@ -13,8 +13,11 @@ public class GameControl {
         GUIFrame = new GUIFrame(this);
         //db.saveNewLocation("AeroClub Airfield(KerosinDestille)","Locations/ACAirfield.png",50,50);
         //db.saveNewLocation("Kavala Burg","Locations/KavalaBurg.png",235,498);
+        //db.saveNewLocation("Selekano Airfield","Locations/SelekanoAirfield.png",988,724);
+        //db.saveNewLocation("Ghost Hotel","Locations/GhostHotel.png",1010,198);
         selectRandomLocation();
         setLocPos(zufalls);
+        db.readName(zufalls);
     }
     public DataBase getDB(){return db;}
     public GUIFrame getGUIFrame(){
@@ -30,9 +33,9 @@ public class GameControl {
         GameGUI.LocPosY = (int)pLocPos.getY();
     }
     public void selectRandomLocation(){
-        zufalls = zufall.nextInt(3);
+        zufalls = zufall.nextInt(5);
         while(zufalls==0){
-            zufalls=zufall.nextInt(3);
+            zufalls=zufall.nextInt(5);
         }
         GameGUI.LocationNumber = zufalls;
     }

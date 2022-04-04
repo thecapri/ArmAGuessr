@@ -67,8 +67,7 @@
             }catch(SQLException e){
                 e.printStackTrace();
             }
-            System.out.println("Datenbank:");
-            System.out.println("Location: "+pSaveLocation);
+            System.out.println("Datenbank Speicherort: "+pSaveLocation);
             return pSaveLocation;
         }
 
@@ -89,8 +88,7 @@
             }catch(SQLException e){
                 e.printStackTrace();
             }
-            System.out.println("Datenbank:");
-            System.out.println("Beschreibung: "+pBeschreibung);
+            System.out.println("-Datenbank- Location: "+pBeschreibung);
             return pBeschreibung;
         }
 
@@ -111,7 +109,7 @@
             }catch(SQLException e){
                 e.printStackTrace();
             }
-            System.out.println("Datenbank Location "+pGenerationNummer+": X: "+pOrtLocation.getX()+", Y: "+pOrtLocation.getY());
+            //System.out.println("Datenbank Location "+pGenerationNummer+": X: "+pOrtLocation.getX()+", Y: "+pOrtLocation.getY());
             return pOrtLocation;
         }
 
