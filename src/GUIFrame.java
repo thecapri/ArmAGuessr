@@ -5,7 +5,7 @@ public class GUIFrame extends JFrame {
     public GUIFrame(GameControl pGameControl){
         GameControl = pGameControl;
         setTitle("ArmA Guessr");
-        add(new GameGUI());
+        add(pGameControl.getGameGUI());
         setSize(1350,850);
         setResizable(false);
         setLayout(null);

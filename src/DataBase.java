@@ -1,3 +1,4 @@
+ import java.awt.*;
  import java.sql.*;
 
     public class DataBase {
@@ -17,6 +18,7 @@
                 Class.forName("org.sqlite.JDBC");
                 con = DriverManager.getConnection("jdbc:sqlite:ArmaGuessr.db");
                 Statement stmt = con.createStatement();
+                System.out.println("Connection to Database successful");
                 stmt.executeUpdate(DB);
                 stmt.close();
             } catch (ClassNotFoundException|SQLException e) {
@@ -36,10 +38,10 @@
 
             String sqlInsert = "INSERT INTO ArmaGuessr"
                     + "(Beschreibung, SaveLocation, pX, pY)"
-                    + "VALUES (" + pID + ",\"" + pBeschreibung + ",\""+ pSaveLocation + ",\"" + pX + ",\"" + pY + "\"" + ");";
+                    + "VALUES ("  + "\"" + pBeschreibung + "\",\""+ pSaveLocation + "\"," + pX + "," + pY  + ");";
             try {
                 Statement stmt = con.createStatement();
-                stmt.execute(sqlInsert);
+                stmt.executeUpdate(sqlInsert);
                 stmt.close();
             } catch(SQLException e){
                 e.printStackTrace();
@@ -65,6 +67,7 @@
             }catch(SQLException e){
                 e.printStackTrace();
             }
+            System.out.println("Datenbank:");
             System.out.println("Location: "+pSaveLocation);
             return pSaveLocation;
         }
@@ -86,6 +89,7 @@
             }catch(SQLException e){
                 e.printStackTrace();
             }
+            System.out.println("Datenbank:");
             System.out.println("Beschreibung: "+pBeschreibung);
             return pBeschreibung;
         }
@@ -95,36 +99,46 @@
          * @param pGenerationNummer ID des Ortes der Ausgelesen werden soll
          * @return Rückgabe Koordinaten als Array X=[0], Y=[1]
          */
-        public int[] readXandY(int pGenerationNummer){
-            int[] pOrtLocation = null;
+        public Point readXandY(int pGenerationNummer){
+            Point pOrtLocation = new Point();
             try{
                 String sqlQuery = "SELECT pY, pX FROM ArmaGuessr"
                         + " WHERE ID ="+pGenerationNummer+";";
                 Statement stmt = con.createStatement();
                 ResultSet table = stmt.executeQuery(sqlQuery);
-                pOrtLocation[0] = table.getInt("pX");
-                pOrtLocation[1] = table.getInt("pY");
+                pOrtLocation.setLocation(table.getInt("pX"),table.getInt("pY"));
                 stmt.close();
             }catch(SQLException e){
                 e.printStackTrace();
             }
-            System.out.println("X: "+pOrtLocation[0]);
-            System.out.println("Y: "+pOrtLocation[1]);
+            System.out.println("Datenbank Location "+pGenerationNummer+": X: "+pOrtLocation.getX()+", Y: "+pOrtLocation.getY());
             return pOrtLocation;
         }
 
         /**
-         * Löscht alle Einträge der DB
+         * Löscht eine bestimmte Zeile aus der Datenbank
+         * @param pGenerationNummer ID der Zeile
          */
-        /**
-        public void clearDB(){
+        public void deleteRow(int pGenerationNummer){
             try{
                 Statement stmt = con.createStatement();
-                stmt.executeUpdate("DELETE from GAMEOFLIFE");
+                stmt.executeUpdate("DELETE FROM ArmaGuessr\n" +
+                        "WHERE ID ="+ pGenerationNummer + ";");
                 stmt.close();
             }catch(SQLException e){
                 e.printStackTrace();
             }
         }
-        **/
+        /**
+         * Löscht alle Einträge der DB
+         */
+        public void clearDB(){
+            try{
+                Statement stmt = con.createStatement();
+                stmt.executeUpdate("DELETE from ArmaGuessr");
+                stmt.close();
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
     }

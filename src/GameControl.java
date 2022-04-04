@@ -1,15 +1,20 @@
+import java.awt.*;
+import java.util.Random;
+
 public class GameControl {
     GUIFrame GUIFrame;
     GameGUI GameGUI;
     DataBase db;
+    Random zufall = new Random();
+    int zufalls;
     public GameControl(){
-        //GUIFrame = new GUIFrame(this);
         db = new DataBase();
-        //db.saveNewLocation("AeroClubAirfield(KerosinDestille)","Locations/ACAirfield.png",50,50);
-        db.readName(1);
-        db.readSaveLocation(1);
-        db.readXandY(1);
-        //GameGUI = new GameGUI(this);
+        GameGUI = new GameGUI(this);
+        GUIFrame = new GUIFrame(this);
+        //db.saveNewLocation("AeroClub Airfield(KerosinDestille)","Locations/ACAirfield.png",50,50);
+        //db.saveNewLocation("Kavala Burg","Locations/KavalaBurg.png",235,498);
+        selectRandomLocation();
+        setLocPos(zufalls);
     }
     public DataBase getDB(){return db;}
     public GUIFrame getGUIFrame(){
@@ -17,5 +22,27 @@ public class GameControl {
     }
     public GameGUI getGameGUI(){
         return GameGUI;
+    }
+
+    public void setLocPos(int pLocationNumber){
+        Point pLocPos = db.readXandY(pLocationNumber);
+        GameGUI.LocPosX = (int)pLocPos.getX();
+        GameGUI.LocPosY = (int)pLocPos.getY();
+    }
+    public void selectRandomLocation(){
+        zufalls = zufall.nextInt(3);
+        while(zufalls==0){
+            zufalls=zufall.nextInt(3);
+        }
+        GameGUI.LocationNumber = zufalls;
+    }
+    public int berechneEntfernung(){
+        // 1 Pixel = 25m
+        int x1 = GameGUI.x- GameGUI.LocPosX;
+        int x2 = GameGUI.y- GameGUI.LocPosY;
+        System.out.println((int)Math.sqrt((x1*x1)+(x2*x2))*25 + " Meter entfernt");
+        return (int)Math.sqrt((x1*x1)+(x2*x2))*25;
+
+
     }
 }
