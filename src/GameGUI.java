@@ -13,7 +13,13 @@ public class GameGUI extends JPanel {
     int y;
     int LocPosX;
     int LocPosY;
-    int LocationNumber;
+    int RoundNumber;
+    Image Map;
+    GameControl GameControl;
+    JButton setLocation, nextLocation;
+    JLabel LPoints;
+    Boolean playing = true;
+
     MouseListener mListener = new MouseListener() {
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -45,19 +51,26 @@ public class GameGUI extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             if(e.getSource()==setLocation){
+                setLocation.setVisible(false);
+                nextLocation.setVisible(true);
                 System.out.println("Eingeloggte Position: "+x+", "+ y);
                 playing = false;
                 repaint();
                 GameControl.berechneEntfernung();
+            }else if(e.getSource()==nextLocation){
+                setLocation.setVisible(true);
+                nextLocation.setVisible(false);
+                playing = true;
+                if(RoundNumber==1){
+                    GameControl.getRound2();
+                }else if(RoundNumber==2){
+                    GameControl.getRound3();
+                }
+                repaint();
             }
         }
     };
-    Image Map;
-    GameControl GameControl;
-    JButton setLocation;
-    JLabel LPoints;
-    Boolean playing = true;
-    int Points = 0;
+
     public GameGUI(GameControl pGameControl){
         GameControl = pGameControl;
         setSize(1350,850);
@@ -97,12 +110,18 @@ public class GameGUI extends JPanel {
         setLocation.setBackground(Color.BLACK);
         setLocation.addActionListener(listener);
         add(setLocation);
-        LPoints = new JLabel("Your Points: "+ Points);
+        nextLocation = new JButton("Next Location");
+        nextLocation.setBounds(20,350,100,20);
+        nextLocation.setBackground(Color.BLACK);
+        nextLocation.addActionListener(listener);
+        nextLocation.setVisible(false);
+        add(nextLocation);
+        LPoints = new JLabel("Your Points: "+ GameControl.Points);
         LPoints.setForeground(Color.BLACK);
         LPoints.setBounds(0,0,10,10);
         LPoints.setVisible(true);
         add(LPoints);
-        LPoints = new JLabel("Your Points: "+ Points);
+        LPoints = new JLabel("Your Points: "+ GameControl.Points);
         LPoints.setForeground(Color.BLACK);
         LPoints.setBounds(0,0,100,20);
         LPoints.setVisible(true);

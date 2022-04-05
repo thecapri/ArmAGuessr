@@ -6,7 +6,10 @@ public class GameControl {
     GameGUI GameGUI;
     DataBase db;
     Random zufall = new Random();
-    int zufalls;
+    int round1;
+    int round2;
+    int round3;
+    int Points = 0;
     public GameControl(){
         db = new DataBase();
         GameGUI = new GameGUI(this);
@@ -16,8 +19,6 @@ public class GameControl {
         //db.saveNewLocation("Selekano Airfield","Locations/SelekanoAirfield.png",988,724);
         //db.saveNewLocation("Ghost Hotel","Locations/GhostHotel.png",1010,198);
         selectRandomLocation();
-        setLocPos(zufalls);
-        db.readName(zufalls);
     }
     public DataBase getDB(){return db;}
     public GUIFrame getGUIFrame(){
@@ -33,19 +34,56 @@ public class GameControl {
         GameGUI.LocPosY = (int)pLocPos.getY();
     }
     public void selectRandomLocation(){
-        zufalls = zufall.nextInt(5);
-        while(zufalls==0){
-            zufalls=zufall.nextInt(5);
+        int zufalls;
+        for(int i = 1; i<=3; i++) {
+            zufalls = zufall.nextInt(5);
+            while (zufalls == 0 || zufalls==round1 || zufalls==round2) {
+                zufalls = zufall.nextInt(5);
+            }
+            if(i == 1){
+                round1 = zufalls;
+            }else if(i==2){
+                round2 = zufalls;
+            }else if (i==3){
+                round3 = zufalls;
+            }
         }
-        GameGUI.LocationNumber = zufalls;
+        System.out.println("1:"+round1+" 2:"+round2+" 3:"+round3);
+        getRound1();
+    }
+    public void getRound1(){
+        System.out.println("Runde 1:");
+        GameGUI.RoundNumber = 1;
+        setLocPos(round1);
+        db.readName(round1);
+    }
+    public void getRound2(){
+        System.out.println("Runde 2:");
+        GameGUI.RoundNumber = 2;
+        setLocPos(round2);
+        db.readName(round2);
+    }
+    public void getRound3(){
+        System.out.println("Runde 3:");
+        GameGUI.RoundNumber = 3;
+        setLocPos(round3);
+        db.readName(round3);
     }
     public int berechneEntfernung(){
         // 1 Pixel = 25m
+        int pPoints;
         int x1 = GameGUI.x- GameGUI.LocPosX;
         int x2 = GameGUI.y- GameGUI.LocPosY;
-        System.out.println((int)Math.sqrt((x1*x1)+(x2*x2))*25 + " Meter entfernt");
-        return (int)Math.sqrt((x1*x1)+(x2*x2))*25;
-
-
+        pPoints = (int)Math.sqrt((x1*x1)+(x2*x2))*25;
+        System.out.println(pPoints + " Meter entfernt");
+        calcPointsperRound(pPoints);
+        return pPoints;
+    }
+    public void calcPointsperRound(int pPoints){
+        int pZwischenPoint = 1000-pPoints;
+        if(pZwischenPoint>=0){
+            Points = Points + pZwischenPoint;
+        }
+        System.out.println(Points+"/1000 Punkten erreicht");
     }
 }
