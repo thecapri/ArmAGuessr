@@ -62,7 +62,7 @@ public class GameGUI extends JPanel {
                     GameControl.GameEnd();
                 }
             }else if(e.getSource()==nextLocation){
-                setLocation.setVisible(true);
+                setLocation.setVisible(false);
                 nextLocation.setVisible(false);
                 seePicture.setVisible(false);
                 seeMap.setVisible(true);

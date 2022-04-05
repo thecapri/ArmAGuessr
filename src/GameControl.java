@@ -15,7 +15,6 @@ public class GameControl {
         GameGUI = new GameGUI(this);
         GUIFrame = new GUIFrame(this);
         selectRandomLocation();
-        db.returnAnzlocations();
     }
     public DataBase getDB(){return db;}
     public GUIFrame getGUIFrame(){
@@ -45,7 +44,7 @@ public class GameControl {
                 round3 = zufalls;
             }
         }
-        System.out.println("1:"+round1+" 2:"+round2+" 3:"+round3);
+        System.out.println("1:"+round1+" 2:"+round2+" 3:"+round3+"\n-3 Rounds-");
         getRound1();
     }
     public void getRound1(){
@@ -90,10 +89,10 @@ public class GameControl {
         System.out.println(pZwischenPoint+"/1000 Punkten erreicht");
     }
     private void reSafeDB(){
-        db.saveNewLocation("AeroClub Airfield(KerosinDestille)","Locations/ACAirfield.png",50,50);
-        db.saveNewLocation("Kavala Burg","Locations/KavalaBurg.png",235,498);
-        db.saveNewLocation("Selekano Airfield","Locations/SelekanoAirfield.png",988,724);
-        db.saveNewLocation("Ghost Hotel","Locations/GhostHotel.png",1010,198);
+        db.saveNewLocation("AeroClub Airfield(KerosinDestille)","src/Locations/ACAirfield.png",50,50);
+        db.saveNewLocation("Kavala Burg","src/Locations/KavalaBurg.png",235,498);
+        db.saveNewLocation("Selekano Airfield","src/Locations/SelekanoAirfield.png",988,724);
+        db.saveNewLocation("Ghost Hotel","src/Locations/GhostHotel.png",1010,198);
         db.saveNewLocation("Bank","src/Locations/Bank.jpg",773, 348);
         db.saveNewLocation("Bomos Insel (Oben Links)","src/Locations/BomosInsel.jpg",198, 158);
         db.saveNewLocation("Burg Checkpoint","src/Locations/BurgCheckpoint.jpg",577, 662);

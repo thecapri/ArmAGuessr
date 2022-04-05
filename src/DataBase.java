@@ -125,7 +125,7 @@
             }catch(SQLException e){
                 e.printStackTrace();
             }
-            System.out.println("-Datenbank- Anzahl Locations"+AnzLocations);
+            //System.out.println("-Datenbank- Anzahl Locations: "+AnzLocations);
             return AnzLocations;
         }
         /**
