@@ -67,7 +67,7 @@
             }catch(SQLException e){
                 e.printStackTrace();
             }
-            System.out.println("Datenbank Speicherort: "+pSaveLocation);
+            System.out.println("-Datenbank- Speicherort: "+pSaveLocation);
             return pSaveLocation;
         }
 
@@ -112,7 +112,22 @@
             //System.out.println("Datenbank Location "+pGenerationNummer+": X: "+pOrtLocation.getX()+", Y: "+pOrtLocation.getY());
             return pOrtLocation;
         }
-
+        /**
+         * Gibt die aktuelle Anzahl an Locations zurück
+         */
+        public int returnAnzlocations(){
+            int AnzLocations = 0;
+            try{
+                Statement stmt = con.createStatement();
+                ResultSet table = stmt.executeQuery("SELECT COUNT(*) FROM ArmaGuessr");
+                AnzLocations = table.getInt("COUNT(*)");
+                stmt.close();
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
+            System.out.println("-Datenbank- Anzahl Locations"+AnzLocations);
+            return AnzLocations;
+        }
         /**
          * Löscht eine bestimmte Zeile aus der Datenbank
          * @param pGenerationNummer ID der Zeile

@@ -15,6 +15,7 @@ public class GameControl {
         GameGUI = new GameGUI(this);
         GUIFrame = new GUIFrame(this);
         selectRandomLocation();
+        db.returnAnzlocations();
     }
     public DataBase getDB(){return db;}
     public GUIFrame getGUIFrame(){
@@ -32,9 +33,9 @@ public class GameControl {
     public void selectRandomLocation(){
         int zufalls;
         for(int i = 1; i<=3; i++) {
-            zufalls = zufall.nextInt(29);
+            zufalls = zufall.nextInt(db.returnAnzlocations()+1);
             while (zufalls == 0 || zufalls==round1 || zufalls==round2) {
-                zufalls = zufall.nextInt(29);
+                zufalls = zufall.nextInt(db.returnAnzlocations()+1);
             }
             if(i == 1){
                 round1 = zufalls;
@@ -122,6 +123,7 @@ public class GameControl {
         db.saveNewLocation("Air HQ Airfield", "src/Locations/AirHQAirfield.jpg",720, 372);
         db.saveNewLocation("Athira Garage", "src/Locations/AthiraGarage.jpg",693, 285);
         db.saveNewLocation("Bandit Athira", "src/Locations/BanditAthira.jpg",644, 363);
-
+        db.saveNewLocation("Ghost Hotel inside", "src/Locations/GhostHotelInside.jpg", 1010,198);
+        db.saveNewLocation("Sumpf", "src/Locations/Sumpf.jpg", 979, 440);
     }
 }
