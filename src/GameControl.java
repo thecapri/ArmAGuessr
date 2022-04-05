@@ -53,6 +53,7 @@ public class GameControl {
         setLocPos(round1);
         db.readName(round1);
         GameGUI.selectPicture(db.readSaveLocation(round1));
+        GameGUI.Path = db.readSaveLocation(round1);
     }
     public void getRound2(){
         System.out.println("\nRunde 2:");
@@ -60,6 +61,7 @@ public class GameControl {
         setLocPos(round2);
         db.readName(round2);
         GameGUI.selectPicture(db.readSaveLocation(round2));
+        GameGUI.Path = db.readSaveLocation(round2);
     }
     public void getRound3(){
         System.out.println("\nRunde 3:");
@@ -67,6 +69,7 @@ public class GameControl {
         setLocPos(round3);
         db.readName(round3);
         GameGUI.selectPicture(db.readSaveLocation(round3));
+        GameGUI.Path = db.readSaveLocation(round3);
     }
     public int berechneEntfernung(){
         // 1 Pixel = 25m
