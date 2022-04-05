@@ -14,8 +14,10 @@ public class GameGUI extends JPanel {
     GameControl GameControl;
     JButton setLocation, nextLocation, seePicture, seeMap;
     JLabel LPoints;
-    Boolean playing = true;
+    Boolean playing = false;
+    Boolean finRound = false;
     String Path;
+    Rectangle r;
 
     MouseListener mListener = new MouseListener() {
         @Override
@@ -23,7 +25,7 @@ public class GameGUI extends JPanel {
             if(playing==true) {
                 x = e.getX();
                 y = e.getY();
-                //System.out.println("Gedrückte Position: "+x+", "+ y);
+                System.out.println("Gedrückte Position: "+x+", "+ y);
                 repaint();
             }
         }
@@ -50,9 +52,11 @@ public class GameGUI extends JPanel {
             if(e.getSource()==setLocation){
                 setLocation.setVisible(false);
                 nextLocation.setVisible(true);
+                seePicture.setVisible(false);
                 System.out.println("Eingeloggte Position: "+x+", "+ y);
                 playing = false;
-                repaint();
+                finRound = true;
+                repaint(r);
                 GameControl.berechneEntfernung();
                 if(RoundNumber==3){
                     GameControl.GameEnd();
@@ -60,7 +64,10 @@ public class GameGUI extends JPanel {
             }else if(e.getSource()==nextLocation){
                 setLocation.setVisible(true);
                 nextLocation.setVisible(false);
+                seePicture.setVisible(false);
+                seeMap.setVisible(true);
                 playing = true;
+                finRound = false;
                 if(RoundNumber==1){
                     GameControl.getRound2();
                 }else if(RoundNumber==2){
@@ -70,14 +77,15 @@ public class GameGUI extends JPanel {
             }else if(e.getSource() == seePicture){
                 seePicture.setVisible(false);
                 seeMap.setVisible(true);
+                setLocation.setVisible(false);
                 playing = false;
-                repaint();
+                selectPicture(Path);
             }else if(e.getSource() == seeMap){
-                selectMap();
                 seePicture.setVisible(true);
                 seeMap.setVisible(false);
+                setLocation.setVisible(true);
                 playing = true;
-                repaint();
+                selectMap();
             }
         }
     };
@@ -102,6 +110,7 @@ public class GameGUI extends JPanel {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+        repaint();
     }
     public void selectMap(){
         try {
@@ -110,15 +119,16 @@ public class GameGUI extends JPanel {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+        repaint();
     }
     public void paint(Graphics g){
         Graphics2D g2D = (Graphics2D) g;
         g2D.drawImage(Picture, 175, 5, 1200, 805, null);
         if(x>=175 && y>=5) {
-            g2D.fill(new Rectangle(x, y, 5, 5));
+            g2D.fill(r = new Rectangle(x, y, 5, 5));
         }
         g2D.drawLine(485,100,525,100);
-        if(playing==false){
+        if(finRound == true){
             g2D.setColor(Color.RED);
             g2D.fill(new Rectangle(LocPosX,LocPosY,5,5));
             g2D.drawLine(x+2, y+5, LocPosX+2, LocPosY);
@@ -128,6 +138,7 @@ public class GameGUI extends JPanel {
     private void createUI(){
         setLocation = new JButton("set Location");
         setLocation.setBounds(20,300,100,20);
+        setLocation.setVisible(false);
         setLocation.setBackground(Color.BLACK);
         setLocation.addActionListener(listener);
         add(setLocation);
@@ -147,6 +158,7 @@ public class GameGUI extends JPanel {
         seeMap.setBounds(20,100,100,20);
         seeMap.setBackground(Color.BLACK);
         seeMap.addActionListener(listener);
+        seeMap.setVisible(true);
         add(seeMap);
         LPoints = new JLabel("Your Points: "+ GameControl.Points+"/3000");
         LPoints.setForeground(Color.BLACK);
