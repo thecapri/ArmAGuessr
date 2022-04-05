@@ -56,34 +56,40 @@ public class GameControl {
         GameGUI.RoundNumber = 1;
         setLocPos(round1);
         db.readName(round1);
+        GameGUI.selectPicture(db.readSaveLocation(round1));
     }
     public void getRound2(){
-        System.out.println("Runde 2:");
+        System.out.println("\nRunde 2:");
         GameGUI.RoundNumber = 2;
         setLocPos(round2);
         db.readName(round2);
+        GameGUI.selectPicture(db.readSaveLocation(round2));
     }
     public void getRound3(){
-        System.out.println("Runde 3:");
+        System.out.println("\nRunde 3:");
         GameGUI.RoundNumber = 3;
         setLocPos(round3);
         db.readName(round3);
+        GameGUI.selectPicture(db.readSaveLocation(round3));
     }
     public int berechneEntfernung(){
         // 1 Pixel = 25m
-        int pPoints;
+        int pMeterEntfernt;
         int x1 = GameGUI.x- GameGUI.LocPosX;
         int x2 = GameGUI.y- GameGUI.LocPosY;
-        pPoints = (int)Math.sqrt((x1*x1)+(x2*x2))*25;
-        System.out.println(pPoints + " Meter entfernt");
-        calcPointsperRound(pPoints);
-        return pPoints;
+        pMeterEntfernt = (int)Math.sqrt((x1*x1)+(x2*x2))*25;
+        System.out.println(pMeterEntfernt + " Meter entfernt");
+        calcPointsperRound(pMeterEntfernt);
+        return pMeterEntfernt;
+    }
+    public void GameEnd(){
+        System.out.println("\nGame Ended \nFinal Points: "+Points+"/3000");
     }
     public void calcPointsperRound(int pPoints){
         int pZwischenPoint = 1000-pPoints;
         if(pZwischenPoint>=0){
             Points = Points + pZwischenPoint;
-        }
-        System.out.println(Points+"/1000 Punkten erreicht");
+        }else pZwischenPoint=0;
+        System.out.println(pZwischenPoint+"/1000 Punkten erreicht");
     }
 }

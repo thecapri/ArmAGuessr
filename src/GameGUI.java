@@ -9,16 +9,13 @@ import java.io.File;
 import java.io.IOException;
 
 public class GameGUI extends JPanel {
-    int x;
-    int y;
-    int LocPosX;
-    int LocPosY;
-    int RoundNumber;
-    Image Map;
+    int x, y, LocPosX, LocPosY, RoundNumber;
+    Image Map, Picture;
     GameControl GameControl;
-    JButton setLocation, nextLocation;
+    JButton setLocation, nextLocation, seePicture, seeMap;
     JLabel LPoints;
     Boolean playing = true;
+    String Path;
 
     MouseListener mListener = new MouseListener() {
         @Override
@@ -57,6 +54,9 @@ public class GameGUI extends JPanel {
                 playing = false;
                 repaint();
                 GameControl.berechneEntfernung();
+                if(RoundNumber==3){
+                    GameControl.GameEnd();
+                }
             }else if(e.getSource()==nextLocation){
                 setLocation.setVisible(true);
                 nextLocation.setVisible(false);
@@ -66,6 +66,17 @@ public class GameGUI extends JPanel {
                 }else if(RoundNumber==2){
                     GameControl.getRound3();
                 }
+                repaint();
+            }else if(e.getSource() == seePicture){
+                seePicture.setVisible(false);
+                seeMap.setVisible(true);
+                playing = false;
+                repaint();
+            }else if(e.getSource() == seeMap){
+                selectMap();
+                seePicture.setVisible(true);
+                seeMap.setVisible(false);
+                playing = true;
                 repaint();
             }
         }
@@ -81,18 +92,28 @@ public class GameGUI extends JPanel {
         setOpaque(true);
         addMouseListener(mListener);
         createUI();
-        try {
-            File pathToFile = new File("Arma3atlis.jpg");
-            Map = ImageIO.read(pathToFile);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
         setBackground(Color.WHITE);
         repaint();
     }
+    public void selectPicture(String pPath){
+        try {
+            File pathToFile = new File(pPath);
+            Picture = ImageIO.read(pathToFile);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+    public void selectMap(){
+        try {
+            File pathToFile = new File("Arma3atlis.jpg");
+            Picture = ImageIO.read(pathToFile);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
     public void paint(Graphics g){
         Graphics2D g2D = (Graphics2D) g;
-        g2D.drawImage(Map, 175, 5, 1200, 805, null);
+        g2D.drawImage(Picture, 175, 5, 1200, 805, null);
         if(x>=175 && y>=5) {
             g2D.fill(new Rectangle(x, y, 5, 5));
         }
@@ -116,14 +137,20 @@ public class GameGUI extends JPanel {
         nextLocation.addActionListener(listener);
         nextLocation.setVisible(false);
         add(nextLocation);
-        LPoints = new JLabel("Your Points: "+ GameControl.Points);
+        seePicture = new JButton("See Picture");
+        seePicture.setBounds(20,100,100,20);
+        seePicture.setBackground(Color.BLACK);
+        seePicture.addActionListener(listener);
+        seePicture.setVisible(false);
+        add(seePicture);
+        seeMap = new JButton("See Map");
+        seeMap.setBounds(20,100,100,20);
+        seeMap.setBackground(Color.BLACK);
+        seeMap.addActionListener(listener);
+        add(seeMap);
+        LPoints = new JLabel("Your Points: "+ GameControl.Points+"/3000");
         LPoints.setForeground(Color.BLACK);
         LPoints.setBounds(0,0,10,10);
-        LPoints.setVisible(true);
-        add(LPoints);
-        LPoints = new JLabel("Your Points: "+ GameControl.Points);
-        LPoints.setForeground(Color.BLACK);
-        LPoints.setBounds(0,0,100,20);
         LPoints.setVisible(true);
         add(LPoints);
     }
