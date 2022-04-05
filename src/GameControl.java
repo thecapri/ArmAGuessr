@@ -117,5 +117,11 @@ public class GameControl {
         db.saveNewLocation("Syrta Tower", "src/Locations/SyrtaTower.jpg", 462, 303);
         db.saveNewLocation("Todeskurve", "src/Locations/Todeskurve.jpg", 469, 392);
         db.saveNewLocation("DB", "src/Locations/DP.jpg",355, 233);
+        db.saveNewLocation("Agios", "src/Locations/Agios.jpg",489, 395);
+        db.saveNewLocation("Airfield", "src/Locations/Airfield.jpg",716, 353);
+        db.saveNewLocation("Air HQ Airfield", "src/Locations/AirHQAirfield.jpg",720, 372);
+        db.saveNewLocation("Athira Garage", "src/Locations/AthiraGarage.jpg",693, 285);
+        db.saveNewLocation("Bandit Athira", "src/Locations/BanditAthira.jpg",644, 363);
+
     }
 }
