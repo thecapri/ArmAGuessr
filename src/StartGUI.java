@@ -9,10 +9,11 @@ public class StartGUI {
     JPanel mainTitle, settings, afterPlay, joinSession, hostSession;
     JLabel title1, title2, settingsTitle, changeControls, changeUsername, afterPlayLabel, joinSessionLabel, hostSessionLabel;
     Font titleFont1, titleFont2, normalFont;
-    JButton playButton, settingsButton, backButton, saveControl, hostButton, joinButton, sendIPAdresse;
-    JTextField setControl, setUserName, setIPAdresse;
+    JButton playButton, settingsButton, backButton, saveControl, hostButton, joinButton, sendIPAdresse, sendRoundNumber;
+    JTextField setControl, setUserName, setIPAdresse, setRoundNumber;
     JComboBox Controls;
     String IPAdresse;
+    int RoundNumber;
 
     public StartGUI(){
         try{
@@ -125,11 +126,22 @@ public class StartGUI {
         hostSession.setVisible(false);
         titleScreen.add(hostSession);
 
-        hostSessionLabel = new JLabel("~~~");
+        hostSessionLabel = new JLabel("How many Rounds?");
         hostSessionLabel.setBounds(85,25,500,40);
         hostSessionLabel.setFont(titleFont1);
         hostSession.add(hostSessionLabel);
 
+        setRoundNumber = new JTextField("Enter Round Number");
+        setRoundNumber.setBounds(55,120,260,40);
+        setRoundNumber.setBackground(Color.WHITE);
+        hostSession.add(setRoundNumber);
+
+        sendRoundNumber = new JButton("Enter");
+        sendRoundNumber.setBounds(320,120,125,40);
+        sendRoundNumber.setBackground(Color.WHITE);
+        sendRoundNumber.setFont(normalFont);
+        sendRoundNumber.addActionListener(plistener);
+        hostSession.add(sendRoundNumber);
 
         /**
          * JOIN SESSION
@@ -263,6 +275,22 @@ public class StartGUI {
             }else if(e.getSource() == sendIPAdresse){
                 IPAdresse = setIPAdresse.getText();
                 System.out.println("IPAdresse Entered: "+IPAdresse);
+            }else if(e.getSource() == sendRoundNumber){
+                Boolean isNumber = false;
+                try
+                {
+                    RoundNumber = Integer.parseInt(setRoundNumber.getText());
+                    isNumber = true;
+                }
+                catch(NumberFormatException v)
+                {
+                    isNumber = false;
+                }
+                if(isNumber==true) {
+                    System.out.println(12);
+                    new GameControl(RoundNumber);
+                }else new GameControl(3);
+                titleScreen.dispose();
             }
         }
     };

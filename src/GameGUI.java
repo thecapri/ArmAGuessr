@@ -73,11 +73,11 @@ public class GameGUI extends JPanel {
                 LMetersAway.setVisible(false);
                 playing = true;
                 finRound = false;
-                if(RoundNumber==1){
-                    GameControl.getRound2();
-                }else if(RoundNumber==2){
-                    GameControl.getRound3();
-                }else seeMap.setVisible(false); nextLocation.setVisible(false);
+                GameControl.getRound();
+                if(RoundNumber==GameControl.zufalls.length){
+                    seeMap.setVisible(false);
+                    nextLocation.setVisible(false);
+                }
                 repaint();
             }else if(e.getSource() == seePicture){
                 seePicture.setVisible(false);

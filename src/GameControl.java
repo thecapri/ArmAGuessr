@@ -7,16 +7,17 @@ public class GameControl {
     GameGUI GameGUI;
     DataBase db;
     Random zufall = new Random();
-    int round1;
-    int round2;
-    int round3;
     int Points = 0;
-    public GameControl(){
+    int[] zufalls;
+    public GameControl(int pAnzahlRounds){
         db = new DataBase();
         GameGUI = new GameGUI(this);
         GUIFrame = new GUIFrame(this);
-        selectRandomLocation();
+
+        zufalls = selectRandomLocation(pAnzahlRounds);
+        getRound();
     }
+
     public DataBase getDB(){return db;}
     public GUIFrame getGUIFrame(){
         return GUIFrame;
@@ -33,46 +34,45 @@ public class GameControl {
         GameGUI.LocPosX = (int)pLocPos.getX();
         GameGUI.LocPosY = (int)pLocPos.getY();
     }
-    public void selectRandomLocation(){
-        int zufalls;
-        for(int i = 1; i<=3; i++) {
-            zufalls = zufall.nextInt(db.returnAnzlocations()+1);
-            while (zufalls == 0 || zufalls==round1 || zufalls==round2) {
-                zufalls = zufall.nextInt(db.returnAnzlocations()+1);
-            }
-            if(i == 1){
-                round1 = zufalls;
-            }else if(i==2){
-                round2 = zufalls;
-            }else round3 = zufalls;
-
+    public int[] selectRandomLocation(int pAnzRunden){
+        if(pAnzRunden>db.returnAnzlocations()){
+            pAnzRunden = db.returnAnzlocations();
         }
-        System.out.println("1:"+round1+" 2:"+round2+" 3:"+round3);
-        getRound1();
-    }
-    public void getRound1(){
-        System.out.println("Runde 1:");
+        int z =0;
+        int pzufalls[] = new int[pAnzRunden];
+        for(int i = 0; i<pAnzRunden; i++) {
+            pzufalls[i] = zufall.nextInt(33);
+            while(pzufalls[i]==0){
+                pzufalls[i] = zufall.nextInt(33);
+            }
+        }
+        while(z<=pAnzRunden/5) {
+            for (int i = 0; i < pAnzRunden; ++i) {
+                for (int j = i + 1; j < pAnzRunden; ++j) {
+                    if (pzufalls[i] == pzufalls[j]) {
+                        pzufalls[i] = zufall.nextInt(33);
+                        while (pzufalls[i] == 0) {
+                            pzufalls[i] = zufall.nextInt(33);
+                        }
+                    }
+                }
+            }
+            z++;
+        }
         GameGUI.RoundNumber = 1;
+        return pzufalls;
+    }
+    public int getRandomLocation(int pRoundNumber){
+        return zufalls[pRoundNumber];
+    }
+    public void getRound(){
+        System.out.println("Runde "+GameGUI.RoundNumber+":");
+        int round1 = getRandomLocation(GameGUI.RoundNumber-1);
         setLocPos(round1);
         db.readName(round1);
         GameGUI.selectPicture(db.readSaveLocation(round1));
-        GameGUI.LRound.setText("Runde "+GameGUI.RoundNumber+"/3");
-    }
-    public void getRound2(){
-        System.out.println("\nRunde 2:");
-        GameGUI.RoundNumber = 2;
-        setLocPos(round2);
-        db.readName(round2);
-        GameGUI.selectPicture(db.readSaveLocation(round2));
-        GameGUI.LRound.setText("Runde "+GameGUI.RoundNumber+"/3");
-    }
-    public void getRound3(){
-        System.out.println("\nRunde 3:");
-        GameGUI.RoundNumber = 3;
-        setLocPos(round3);
-        db.readName(round3);
-        GameGUI.selectPicture(db.readSaveLocation(round3));
-        GameGUI.LRound.setText("Runde "+GameGUI.RoundNumber+"/3");
+        GameGUI.LRound.setText("Runde "+GameGUI.RoundNumber+"/"+zufalls.length);
+        GameGUI.RoundNumber = GameGUI.RoundNumber+1;
     }
     public int berechneEntfernung(){
         // 1 Pixel = 25m
