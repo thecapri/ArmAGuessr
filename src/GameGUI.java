@@ -1,5 +1,6 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,13 +11,15 @@ import java.io.IOException;
 
 public class GameGUI extends JPanel {
     int x, y, LocPosX, LocPosY, RoundNumber;
-    Image Map, Picture;
+    Image Picture;
+    JPanel UIPannnel;
     GameControl GameControl;
     JButton setLocation, nextLocation, seePicture, seeMap;
-    JLabel LPoints;
-    Boolean playing = false;
-    Boolean finRound = false;
-    String Path;
+    JLabel LPoints, LHeadOne, LRound, LMetersAway, LZwischenPoints;
+    Boolean playing = false, finRound = false;
+    String Path, MapPath = "Arma3atlis.jpg";
+    Font titleFont = new Font("Verdana", Font.BOLD, 20);
+    Font normalFont = new Font("Verdana", Font.BOLD, 12);
     Rectangle r;
 
     MouseListener mListener = new MouseListener() {
@@ -25,7 +28,7 @@ public class GameGUI extends JPanel {
             if(playing==true) {
                 x = e.getX();
                 y = e.getY();
-                System.out.println("Gedrückte Position: "+x+", "+ y);
+                //System.out.println("Gedrückte Position: "+x+", "+ y);
                 repaint();
             }
         }
@@ -56,7 +59,7 @@ public class GameGUI extends JPanel {
                 System.out.println("Eingeloggte Position: "+x+", "+ y);
                 playing = false;
                 finRound = true;
-                repaint(r);
+                repaint();
                 GameControl.berechneEntfernung();
                 if(RoundNumber==3){
                     GameControl.GameEnd();
@@ -66,13 +69,15 @@ public class GameGUI extends JPanel {
                 nextLocation.setVisible(false);
                 seePicture.setVisible(false);
                 seeMap.setVisible(true);
+                LZwischenPoints.setVisible(false);
+                LMetersAway.setVisible(false);
                 playing = true;
                 finRound = false;
                 if(RoundNumber==1){
                     GameControl.getRound2();
                 }else if(RoundNumber==2){
                     GameControl.getRound3();
-                }
+                }else seeMap.setVisible(false); nextLocation.setVisible(false);
                 repaint();
             }else if(e.getSource() == seePicture){
                 seePicture.setVisible(false);
@@ -92,18 +97,19 @@ public class GameGUI extends JPanel {
 
     public GameGUI(GameControl pGameControl){
         GameControl = pGameControl;
-        setSize(1350,850);
-        setVisible(true);
-        setFocusable(true);
-        setLayout(null);
-        requestFocus();
-        setOpaque(true);
-        addMouseListener(mListener);
-        createUI();
-        setBackground(Color.WHITE);
-        repaint();
+        this.setBounds(150, 0,1350,850);
+        this.setVisible(true);
+        this.setFocusable(true);
+        this.setLayout(null);
+        this.requestFocus();
+        this.setOpaque(true);
+        this.addMouseListener(mListener);
+        this.createUI();
+        this.setBackground(Color.WHITE);
+        this.repaint();
     }
     public void selectPicture(String pPath){
+        Path = pPath;
         try {
             File pathToFile = new File(pPath);
             Picture = ImageIO.read(pathToFile);
@@ -114,7 +120,7 @@ public class GameGUI extends JPanel {
     }
     public void selectMap(){
         try {
-            File pathToFile = new File("Arma3atlis.jpg");
+            File pathToFile = new File(MapPath);
             Picture = ImageIO.read(pathToFile);
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -123,47 +129,70 @@ public class GameGUI extends JPanel {
     }
     public void paint(Graphics g){
         Graphics2D g2D = (Graphics2D) g;
-        g2D.drawImage(Picture, 175, 5, 1200, 805, null);
-        if(x>=175 && y>=5) {
-            g2D.fill(r = new Rectangle(x, y, 5, 5));
-        }
-        g2D.drawLine(485,100,525,100);
+        g2D.drawImage(Picture, 0, 0, 1200, 815, null);
+        if(seeMap.isVisible()==true){
+            g2D.fill(r = new Rectangle(0, 0, 5, 5));
+        }else g2D.fill(r = new Rectangle(x, y, 5, 5));
         if(finRound == true){
             g2D.setColor(Color.RED);
             g2D.fill(new Rectangle(LocPosX,LocPosY,5,5));
             g2D.drawLine(x+2, y+5, LocPosX+2, LocPosY);
         }
-        add(setLocation);
     }
     private void createUI(){
+        UIPannnel = new JPanel();
+        UIPannnel.setBounds(0,0,150,850);
+        UIPannnel.setBackground(Color.WHITE);
+        UIPannnel.setLayout(null);
         setLocation = new JButton("set Location");
-        setLocation.setBounds(20,300,100,20);
+        setLocation.setBounds(5,155,142,20);
         setLocation.setVisible(false);
-        setLocation.setBackground(Color.BLACK);
+        setLocation.setFont(normalFont);
+        setLocation.setBackground(Color.WHITE);
         setLocation.addActionListener(listener);
-        add(setLocation);
+        UIPannnel.add(setLocation);
         nextLocation = new JButton("Next Location");
-        nextLocation.setBounds(20,350,100,20);
-        nextLocation.setBackground(Color.BLACK);
+        nextLocation.setBounds(5,155,142,20);
+        nextLocation.setBackground(Color.WHITE);
         nextLocation.addActionListener(listener);
+        nextLocation.setFont(normalFont);
         nextLocation.setVisible(false);
-        add(nextLocation);
+        UIPannnel.add(nextLocation);
         seePicture = new JButton("See Picture");
-        seePicture.setBounds(20,100,100,20);
-        seePicture.setBackground(Color.BLACK);
+        seePicture.setBounds(5,125,142,20);
+        seePicture.setBackground(Color.WHITE);
         seePicture.addActionListener(listener);
+        seePicture.setFont(normalFont);
         seePicture.setVisible(false);
-        add(seePicture);
+        UIPannnel.add(seePicture);
         seeMap = new JButton("See Map");
-        seeMap.setBounds(20,100,100,20);
-        seeMap.setBackground(Color.BLACK);
+        seeMap.setBounds(5,125,142,20);
+        seeMap.setBackground(Color.WHITE);
         seeMap.addActionListener(listener);
+        seeMap.setFont(normalFont);
         seeMap.setVisible(true);
-        add(seeMap);
-        LPoints = new JLabel("Your Points: "+ GameControl.Points+"/3000");
-        LPoints.setForeground(Color.BLACK);
-        LPoints.setBounds(0,0,10,10);
-        LPoints.setVisible(true);
-        add(LPoints);
+        UIPannnel.add(seeMap);
+        LPoints = new JLabel("Points: "+ GameControl.Points+"/3000");
+        LPoints.setFont(normalFont);
+        LPoints.setBounds(5,60,175,20);
+        UIPannnel.add(LPoints);
+        LHeadOne = new JLabel("ArmAGuessr");
+        LHeadOne.setBounds(5,10,175,20);
+        LHeadOne.setFont(titleFont);
+        UIPannnel.add(LHeadOne);
+        LRound = new JLabel();
+        LRound.setBounds(5,40,100,20);
+        LRound.setFont(normalFont);
+        UIPannnel.add(LRound);
+        LMetersAway = new JLabel();
+        LMetersAway.setBounds(5,80,175,20);
+        LMetersAway.setFont(normalFont);
+        LMetersAway.setVisible(false);
+        UIPannnel.add(LMetersAway);
+        LZwischenPoints = new JLabel();
+        LZwischenPoints.setBounds(5,100,175,20);
+        LZwischenPoints.setFont(normalFont);
+        LZwischenPoints.setVisible(false);
+        UIPannnel.add(LZwischenPoints);
     }
 }

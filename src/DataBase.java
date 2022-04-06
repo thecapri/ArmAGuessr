@@ -67,7 +67,7 @@
             }catch(SQLException e){
                 e.printStackTrace();
             }
-            System.out.println("-Datenbank- Speicherort: "+pSaveLocation);
+            //System.out.println("-Datenbank- Speicherort: "+pSaveLocation);
             return pSaveLocation;
         }
 
@@ -88,7 +88,7 @@
             }catch(SQLException e){
                 e.printStackTrace();
             }
-            System.out.println("-Datenbank- Location: "+pBeschreibung);
+            //System.out.println("-Datenbank- Location: "+pBeschreibung);
             return pBeschreibung;
         }
 
@@ -109,7 +109,7 @@
             }catch(SQLException e){
                 e.printStackTrace();
             }
-            //System.out.println("Datenbank Location "+pGenerationNummer+": X: "+pOrtLocation.getX()+", Y: "+pOrtLocation.getY());
+            //System.out.println("-Datenbank- Location "+pGenerationNummer+": X: "+pOrtLocation.getX()+", Y: "+pOrtLocation.getY());
             return pOrtLocation;
         }
         /**
@@ -145,10 +145,10 @@
         /**
          * Löscht alle Einträge der DB
          */
-        public void clearDB(){
+        public void deleteDB(){
             try{
                 Statement stmt = con.createStatement();
-                stmt.executeUpdate("DELETE from ArmaGuessr");
+                stmt.executeUpdate("DROP TABLE ArmaGuessr");
                 stmt.close();
             }catch(SQLException e){
                 e.printStackTrace();
