@@ -1,6 +1,5 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,7 +11,7 @@ import java.io.IOException;
 public class GameGUI extends JPanel {
     int x, y, LocPosX, LocPosY, RoundNumber;
     Image Picture;
-    JPanel UIPannnel;
+    JPanel UIPannnel, EndGamePanel;
     GameControl GameControl;
     JButton setLocation, nextLocation, seePicture, seeMap;
     JLabel LPoints, LHeadOne, LRound, LMetersAway, LZwischenPoints;
@@ -21,6 +20,20 @@ public class GameGUI extends JPanel {
     Font titleFont = new Font("Verdana", Font.BOLD, 20);
     Font normalFont = new Font("Verdana", Font.BOLD, 12);
     Rectangle r;
+
+    public GameGUI(GameControl pGameControl){
+        GameControl = pGameControl;
+        this.setBounds(150, 0,1350,850);
+        this.setVisible(true);
+        this.setFocusable(true);
+        this.setLayout(null);
+        this.requestFocus();
+        this.setOpaque(true);
+        this.addMouseListener(mListener);
+        this.createUI();
+        this.setBackground(Color.WHITE);
+        this.repaint();
+    }
 
     MouseListener mListener = new MouseListener() {
         @Override
@@ -53,6 +66,9 @@ public class GameGUI extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             if(e.getSource()==setLocation){
+                if(RoundNumber > GameControl.anzRunden){
+                    nextLocation.setText("Go to End");
+                }
                 setLocation.setVisible(false);
                 nextLocation.setVisible(true);
                 seePicture.setVisible(false);
@@ -61,24 +77,21 @@ public class GameGUI extends JPanel {
                 finRound = true;
                 repaint();
                 GameControl.berechneEntfernung();
-                if(RoundNumber==3){
-                    GameControl.GameEnd();
-                }
             }else if(e.getSource()==nextLocation){
-                setLocation.setVisible(false);
-                nextLocation.setVisible(false);
-                seePicture.setVisible(false);
-                seeMap.setVisible(true);
-                LZwischenPoints.setVisible(false);
-                LMetersAway.setVisible(false);
-                playing = true;
-                finRound = false;
-                GameControl.getRound();
-                if(RoundNumber==GameControl.zufalls.length){
-                    seeMap.setVisible(false);
+                if(RoundNumber > GameControl.anzRunden){
+                    GameControl.initEndGame();
+                }else {
+                    setLocation.setVisible(false);
                     nextLocation.setVisible(false);
+                    seePicture.setVisible(false);
+                    seeMap.setVisible(true);
+                    LZwischenPoints.setVisible(false);
+                    LMetersAway.setVisible(false);
+                    playing = true;
+                    finRound = false;
+                    GameControl.getRound();
+                    repaint();
                 }
-                repaint();
             }else if(e.getSource() == seePicture){
                 seePicture.setVisible(false);
                 seeMap.setVisible(true);
@@ -95,19 +108,6 @@ public class GameGUI extends JPanel {
         }
     };
 
-    public GameGUI(GameControl pGameControl){
-        GameControl = pGameControl;
-        this.setBounds(150, 0,1350,850);
-        this.setVisible(true);
-        this.setFocusable(true);
-        this.setLayout(null);
-        this.requestFocus();
-        this.setOpaque(true);
-        this.addMouseListener(mListener);
-        this.createUI();
-        this.setBackground(Color.WHITE);
-        this.repaint();
-    }
     public void selectPicture(String pPath){
         Path = pPath;
         try {
@@ -172,7 +172,7 @@ public class GameGUI extends JPanel {
         seeMap.setFont(normalFont);
         seeMap.setVisible(true);
         UIPannnel.add(seeMap);
-        LPoints = new JLabel("Points: "+ GameControl.Points+"/3000");
+        LPoints = new JLabel("Points: "+ GameControl.Points+"/"+GameControl.anzRunden*1000);
         LPoints.setFont(normalFont);
         LPoints.setBounds(5,60,175,20);
         UIPannnel.add(LPoints);

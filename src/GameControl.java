@@ -9,12 +9,15 @@ public class GameControl {
     Random zufall = new Random();
     int Points = 0;
     int[] zufalls;
+    int anzRunden;
+    EndGameGUI EndGameGUI;
     public GameControl(int pAnzahlRounds){
+        anzRunden = pAnzahlRounds;
         db = new DataBase();
         GameGUI = new GameGUI(this);
         GUIFrame = new GUIFrame(this);
 
-        zufalls = selectRandomLocation(pAnzahlRounds);
+        zufalls = selectRandomLocation(anzRunden);
         getRound();
     }
 
@@ -28,7 +31,14 @@ public class GameControl {
     public JPanel getUIPanel(){
         return GameGUI.UIPannnel;
     }
+    public JPanel getEndGamePanel(){
+        return GameGUI.EndGamePanel;
+    }
 
+    public void initEndGame(){
+        GUIFrame.GUIFramedispose();
+        EndGameGUI = new EndGameGUI(Points, anzRunden);
+    }
     public void setLocPos(int pLocationNumber){
         Point pLocPos = db.readXandY(pLocationNumber);
         GameGUI.LocPosX = (int)pLocPos.getX();

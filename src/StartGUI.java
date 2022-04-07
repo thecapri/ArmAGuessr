@@ -14,6 +14,7 @@ public class StartGUI {
     JComboBox Controls;
     String IPAdresse;
     int RoundNumber;
+    GameControl GameControl;
 
     public StartGUI(){
         try{
@@ -127,7 +128,7 @@ public class StartGUI {
         titleScreen.add(hostSession);
 
         hostSessionLabel = new JLabel("How many Rounds?");
-        hostSessionLabel.setBounds(85,25,500,40);
+        hostSessionLabel.setBounds(15,35,500,40);
         hostSessionLabel.setFont(titleFont1);
         hostSession.add(hostSessionLabel);
 
@@ -287,8 +288,7 @@ public class StartGUI {
                     isNumber = false;
                 }
                 if(isNumber==true) {
-                    System.out.println(12);
-                    new GameControl(RoundNumber);
+                    GameControl = new GameControl(RoundNumber);
                 }else new GameControl(3);
                 titleScreen.dispose();
             }
