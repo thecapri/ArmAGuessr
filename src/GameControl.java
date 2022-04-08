@@ -16,7 +16,6 @@ public class GameControl {
         db = new DataBase();
         GameGUI = new GameGUI(this);
         GUIFrame = new GUIFrame(this);
-
         zufalls = selectRandomLocation(anzRunden);
         getRound();
     }
@@ -108,6 +107,7 @@ public class GameControl {
         GameGUI.LZwischenPoints.setText("Got "+Points+"/1000 Points");
     }
     private void reSafeDB(){
+        db.saveNewLocation("Bank auf Zero One", "src/Locations/BankZero.jpg", 807, 264);
         db.saveNewLocation("AeroClub Airfield(KerosinDestille)","src/Locations/ACAirfield.png",418, 542);
         db.saveNewLocation("Kavala Burg","src/Locations/KavalaBurg.png",64, 496);
         db.saveNewLocation("Selekano Airfield","src/Locations/SelekanoAirfield.png",812, 725);

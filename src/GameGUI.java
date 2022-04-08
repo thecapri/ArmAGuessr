@@ -41,7 +41,7 @@ public class GameGUI extends JPanel {
             if(playing==true) {
                 x = e.getX();
                 y = e.getY();
-                //System.out.println("Gedrückte Position: "+x+", "+ y);
+                System.out.println("Gedrückte Position: "+x+", "+ y);
                 repaint();
             }
         }

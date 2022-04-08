@@ -135,6 +135,7 @@ public class StartGUI {
         setRoundNumber = new JTextField("Enter Round Number");
         setRoundNumber.setBounds(55,120,260,40);
         setRoundNumber.setBackground(Color.WHITE);
+        setRoundNumber.setForeground(Color.GRAY);
         hostSession.add(setRoundNumber);
 
         sendRoundNumber = new JButton("Enter");
