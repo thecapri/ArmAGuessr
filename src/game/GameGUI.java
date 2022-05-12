@@ -4,23 +4,10 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
 
 public class GameGUI extends JPanel {
-    private boolean init = true;
-    private int zoomLevel = 0;
-    private int minZoomLevel = -20;
-    private int maxZoomLevel = 10;
-    private double zoomMultiplicationFactor = 1.2;
-
-    private Point dragStartScreen;
-    private Point dragEndScreen;
-    private AffineTransform coordTransform = new AffineTransform();
-
     int x, y, LocPosX, LocPosY, RoundNumber;
     GameControl GameControl;
     Image Picture;
@@ -28,7 +15,7 @@ public class GameGUI extends JPanel {
     JButton setLocation, nextLocation, seePicture, seeMap;
     JLabel LPoints, LHeadOne, LRound, LMetersAway, LZwischenPoints;
     Boolean playing = false, finRound = false;
-    String Path, MapPath = "Arma3atlis.jpg";
+    String Path, MapPath = "Arma3atlisResized.jpg";
     Font titleFont = new Font("Verdana", Font.BOLD, 20);
     Font normalFont = new Font("Verdana", Font.BOLD, 12);
     Rectangle r;
@@ -45,15 +32,7 @@ public class GameGUI extends JPanel {
         this.createUI();
         this.setBackground(Color.WHITE);
         this.repaint();
-
-        this.addMouseWheelListener(new MouseWheelListener() {
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                if (e.isControlDown()) {
-                    zoom(e);
-                }
-            }
-        });
+        this.requestFocus();
     }
 
 
@@ -114,6 +93,7 @@ public class GameGUI extends JPanel {
                     finRound = false;
                     GameControl.getRound();
                     repaint();
+                    requestFocus();
                 }
             }else if(e.getSource() == seePicture){
                 seePicture.setVisible(false);
@@ -121,12 +101,14 @@ public class GameGUI extends JPanel {
                 setLocation.setVisible(false);
                 playing = false;
                 selectPicture(Path);
+                requestFocus();
             }else if(e.getSource() == seeMap){
                 seePicture.setVisible(true);
                 seeMap.setVisible(false);
                 setLocation.setVisible(true);
                 playing = true;
                 selectMap();
+                requestFocus();
             }
         }
     };
@@ -150,16 +132,17 @@ public class GameGUI extends JPanel {
         }
         repaint();
     }
-    public void paint(Graphics g){
+    public void paint(Graphics g) {
         Graphics2D g2D = (Graphics2D) g;
-        g2D.drawImage(Picture, 0, 0, 1200, 815, null);
-        if(seeMap.isVisible()==true){
+        g2D.drawImage(Picture, 0, 0,null);
+        //1200, 815
+        if (seeMap.isVisible() == true) {
             g2D.fill(r = new Rectangle(0, 0, 5, 5));
-        }else g2D.fill(r = new Rectangle(x, y, 5, 5));
-        if(finRound == true){
+        } else g2D.fill(r = new Rectangle(x, y, 5, 5));
+        if (finRound == true) {
             g2D.setColor(Color.RED);
-            g2D.fill(new Rectangle(LocPosX,LocPosY,5,5));
-            g2D.drawLine(x+2, y+5, LocPosX+2, LocPosY);
+            g2D.fill(new Rectangle(LocPosX, LocPosY, 5, 5));
+            g2D.drawLine(x + 2, y + 5, LocPosX + 2, LocPosY);
         }
     }
     private void createUI(){
@@ -217,43 +200,5 @@ public class GameGUI extends JPanel {
         LZwischenPoints.setFont(normalFont);
         LZwischenPoints.setVisible(false);
         UIPannnel.add(LZwischenPoints);
-    }
-    /**
-     * Test
-     */
-
-    private Point2D.Float transformPoint(Point p1) throws NoninvertibleTransformException {
-        AffineTransform inverse = coordTransform.createInverse();
-        Point2D.Float p2 = new Point2D.Float();
-        inverse.transform(p1, p2);
-        return p2;
-    }
-
-    private void zoom(MouseWheelEvent e) {
-        try {
-            int wheelRotation = e.getWheelRotation();
-            Point p = e.getPoint();
-            if (wheelRotation > 0) {
-                if (zoomLevel < maxZoomLevel) {
-                    zoomLevel++;
-                    Point2D p1 = transformPoint(p);
-                    coordTransform.scale(1 / zoomMultiplicationFactor, 1 / zoomMultiplicationFactor);
-                    Point2D p2 = transformPoint(p);
-                    coordTransform.translate(p2.getX() - p1.getX(), p2.getY() - p1.getY());
-                    repaint();
-                }
-            } else {
-                if (zoomLevel > minZoomLevel) {
-                    zoomLevel--;
-                    Point2D p1 = transformPoint(p);
-                    coordTransform.scale(zoomMultiplicationFactor, zoomMultiplicationFactor);
-                    Point2D p2 = transformPoint(p);
-                    coordTransform.translate(p2.getX() - p1.getX(), p2.getY() - p1.getY());
-                    repaint();
-                }
-            }
-        } catch (NoninvertibleTransformException ex) {
-            ex.printStackTrace();
-        }
     }
 }

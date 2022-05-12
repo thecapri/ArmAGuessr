@@ -1,6 +1,8 @@
 package game;
 
 import javax.swing.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class GUIFrame extends JFrame {
     GameControl GameControl;
@@ -19,4 +21,5 @@ public class GUIFrame extends JFrame {
     public void GUIFramedispose(){
         this.dispose();
     }
+
 }
