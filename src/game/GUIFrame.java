@@ -1,3 +1,5 @@
+package game;
+
 import javax.swing.*;
 
 public class GUIFrame extends JFrame {

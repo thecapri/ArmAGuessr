@@ -1,4 +1,6 @@
- import java.awt.*;
+package game;
+
+import java.awt.*;
  import java.sql.*;
 
     public class DataBase {

@@ -1,18 +1,30 @@
+package game;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
 
 public class GameGUI extends JPanel {
+    private boolean init = true;
+    private int zoomLevel = 0;
+    private int minZoomLevel = -20;
+    private int maxZoomLevel = 10;
+    private double zoomMultiplicationFactor = 1.2;
+
+    private Point dragStartScreen;
+    private Point dragEndScreen;
+    private AffineTransform coordTransform = new AffineTransform();
+
     int x, y, LocPosX, LocPosY, RoundNumber;
+    GameControl GameControl;
     Image Picture;
     JPanel UIPannnel, EndGamePanel;
-    GameControl GameControl;
     JButton setLocation, nextLocation, seePicture, seeMap;
     JLabel LPoints, LHeadOne, LRound, LMetersAway, LZwischenPoints;
     Boolean playing = false, finRound = false;
@@ -33,7 +45,18 @@ public class GameGUI extends JPanel {
         this.createUI();
         this.setBackground(Color.WHITE);
         this.repaint();
+
+        this.addMouseWheelListener(new MouseWheelListener() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                if (e.isControlDown()) {
+                    zoom(e);
+                }
+            }
+        });
     }
+
+
 
     MouseListener mListener = new MouseListener() {
         @Override
@@ -118,7 +141,7 @@ public class GameGUI extends JPanel {
         }
         repaint();
     }
-    public void selectMap(){
+    private void selectMap(){
         try {
             File pathToFile = new File(MapPath);
             Picture = ImageIO.read(pathToFile);
@@ -194,5 +217,43 @@ public class GameGUI extends JPanel {
         LZwischenPoints.setFont(normalFont);
         LZwischenPoints.setVisible(false);
         UIPannnel.add(LZwischenPoints);
+    }
+    /**
+     * Test
+     */
+
+    private Point2D.Float transformPoint(Point p1) throws NoninvertibleTransformException {
+        AffineTransform inverse = coordTransform.createInverse();
+        Point2D.Float p2 = new Point2D.Float();
+        inverse.transform(p1, p2);
+        return p2;
+    }
+
+    private void zoom(MouseWheelEvent e) {
+        try {
+            int wheelRotation = e.getWheelRotation();
+            Point p = e.getPoint();
+            if (wheelRotation > 0) {
+                if (zoomLevel < maxZoomLevel) {
+                    zoomLevel++;
+                    Point2D p1 = transformPoint(p);
+                    coordTransform.scale(1 / zoomMultiplicationFactor, 1 / zoomMultiplicationFactor);
+                    Point2D p2 = transformPoint(p);
+                    coordTransform.translate(p2.getX() - p1.getX(), p2.getY() - p1.getY());
+                    repaint();
+                }
+            } else {
+                if (zoomLevel > minZoomLevel) {
+                    zoomLevel--;
+                    Point2D p1 = transformPoint(p);
+                    coordTransform.scale(zoomMultiplicationFactor, zoomMultiplicationFactor);
+                    Point2D p2 = transformPoint(p);
+                    coordTransform.translate(p2.getX() - p1.getX(), p2.getY() - p1.getY());
+                    repaint();
+                }
+            }
+        } catch (NoninvertibleTransformException ex) {
+            ex.printStackTrace();
+        }
     }
 }

@@ -1,3 +1,5 @@
+package game;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.Random;
@@ -7,9 +9,8 @@ public class GameControl {
     GameGUI GameGUI;
     DataBase db;
     Random zufall = new Random();
-    int Points = 0;
+    int Points = 0, anzRunden, pixel = 25;
     int[] zufalls;
-    int anzRunden;
     EndGameGUI EndGameGUI;
     public GameControl(int pAnzahlRounds){
         anzRunden = pAnzahlRounds;
@@ -38,12 +39,12 @@ public class GameControl {
         GUIFrame.GUIFramedispose();
         EndGameGUI = new EndGameGUI(Points, anzRunden);
     }
-    public void setLocPos(int pLocationNumber){
+    private void setLocPos(int pLocationNumber){
         Point pLocPos = db.readXandY(pLocationNumber);
         GameGUI.LocPosX = (int)pLocPos.getX();
         GameGUI.LocPosY = (int)pLocPos.getY();
     }
-    public int[] selectRandomLocation(int pAnzRunden){
+    private int[] selectRandomLocation(int pAnzRunden){
         if(pAnzRunden>db.returnAnzlocations()){
             pAnzRunden = db.returnAnzlocations();
         }
@@ -71,7 +72,7 @@ public class GameControl {
         GameGUI.RoundNumber = 1;
         return pzufalls;
     }
-    public int getRandomLocation(int pRoundNumber){
+    private int getRandomLocation(int pRoundNumber){
         return zufalls[pRoundNumber];
     }
     public void getRound(){
@@ -88,16 +89,13 @@ public class GameControl {
         int pMeterEntfernt;
         int x1 = GameGUI.x- GameGUI.LocPosX;
         int x2 = GameGUI.y- GameGUI.LocPosY;
-        pMeterEntfernt = (int)Math.sqrt((x1*x1)+(x2*x2))*25;
+        pMeterEntfernt = (int)Math.sqrt((x1*x1)+(x2*x2))*pixel;
         calcPointsperRound(pMeterEntfernt);
         GameGUI.LMetersAway.setVisible(true);
         GameGUI.LMetersAway.setText(pMeterEntfernt+"m entfernt");
         return pMeterEntfernt;
     }
-    public void GameEnd(){
-        System.out.println("\nGame Ended \nFinal Points: "+Points+"/3000");
-    }
-    public void calcPointsperRound(int pPoints){
+    private void calcPointsperRound(int pPoints){
         int pZwischenPoint = 1000-pPoints;
         if(pZwischenPoint>=0){
             Points = Points + pZwischenPoint;
@@ -105,6 +103,11 @@ public class GameControl {
         GameGUI.LPoints.setText("Points: "+Points+"/3000");
         GameGUI.LZwischenPoints.setVisible(true);
         GameGUI.LZwischenPoints.setText("Got "+Points+"/1000 Points");
+    }
+    private void selectDifferentGame(int pPixel, String pMapPath){
+        GameGUI.MapPath = pMapPath;
+        pixel = pPixel;
+        db.deleteDB();
     }
     private void reSafeDB(){
         db.saveNewLocation("Bank auf Zero One", "src/Locations/BankZero.jpg", 807, 264);
