@@ -80,6 +80,7 @@ public class GameGUI extends JPanel {
                 repaint();
                 GameControl.berechneEntfernung();
             }else if(e.getSource()==nextLocation){
+                //TODO
                 if(RoundNumber > GameControl.anzRunden){
                     GameControl.initEndGame();
                 }else {

@@ -1,5 +1,8 @@
 package game;
 
+import netz.Client;
+import netz.Server;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -16,7 +19,8 @@ public class StartGUI {
     FocusListener fListener;
     String IPAdresse;
     int RoundNumber;
-    GameControl GameControl;
+    GameControl gameControl;
+    StartGUI startGUI = this;
 
     public StartGUI() {
         try {
@@ -28,6 +32,7 @@ public class StartGUI {
         } catch (IOException | FontFormatException e) {
             e.printStackTrace();
         }
+
         /**
          * ActionListener
          */
@@ -52,6 +57,8 @@ public class StartGUI {
                     hostSession.setVisible(true);
                 } else if (e.getSource() == sendIPAdresse) {
                     IPAdresse = setIPAdresse.getText();
+                    new Client(IPAdresse, startGUI);
+                    titleScreen.dispose();
                     System.out.println("IPAdresse Entered: " + IPAdresse);
                 } else if (e.getSource() == sendRoundNumber) {
                     Boolean isNumber = false;
@@ -61,9 +68,10 @@ public class StartGUI {
                     } catch (NumberFormatException v) {
                         isNumber = false;
                     }
-                    if (isNumber == true) {
-                        GameControl = new GameControl(RoundNumber);
-                    } else new GameControl(3);
+                    if (!isNumber) {
+                        RoundNumber = 3;
+                    }
+                    new Server(RoundNumber);
                     titleScreen.dispose();
                 }
             }
@@ -224,7 +232,9 @@ public class StartGUI {
         joinSessionLabel.setFont(titleFont1);
         joinSession.add(joinSessionLabel);
 
-        setIPAdresse = new JTextField("Enter IP-Adresse");
+        //TODO
+        //Enter IP-Adresse
+        setIPAdresse = new JTextField("localhost");
         setIPAdresse.setBounds(55, 120, 260, 40);
         setIPAdresse.addFocusListener(fListener);
         setIPAdresse.setBackground(Color.WHITE);
@@ -267,5 +277,8 @@ public class StartGUI {
         seeHowToPlay.setBackground(Color.WHITE);
         seeHowToPlay.setFont(normalFont);
         settings.add(seeHowToPlay);
+    }
+    public void setGameControl(GameControl pGameControl){
+        gameControl = pGameControl;
     }
 }

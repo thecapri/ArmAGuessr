@@ -1,10 +1,18 @@
 package game;
 
+import netz.Network;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 import java.util.Random;
+//TODO
+//Is ready funktion (+ Position gedückt (Anderen Vektor von gegener malen))
+//IPadresse anzeigen (netzwerk fenster)
+//waiting screen fixen
 
 public class GameControl {
+    JFrame waitFrame;
     GUIFrame GUIFrame;
     GameGUI GameGUI;
     DataBase db;
@@ -12,13 +20,12 @@ public class GameControl {
     int Points = 0, anzRunden, pixel = 25;
     int[] zufalls;
     EndGameGUI EndGameGUI;
-    public GameControl(int pAnzahlRounds){
+    Network network;
+    public GameControl(int pAnzahlRounds, Network pNetwork){
+        network = pNetwork;
         anzRunden = pAnzahlRounds;
         db = new DataBase();
-        GameGUI = new GameGUI(this);
-        GUIFrame = new GUIFrame(this);
-        zufalls = selectRandomLocation(anzRunden);
-        getRound();
+        pausenBildschirm();
     }
 
     public DataBase getDB(){return db;}
@@ -35,7 +42,46 @@ public class GameControl {
         return GameGUI.EndGamePanel;
     }
 
+    public int getAnzahlRunden(){
+        return anzRunden;
+    }
+
+    public void pausenBildschirm(){
+        System.out.println("waiting...");
+        waitFrame = new JFrame("ArmAGuessr");
+        waitFrame.setSize(500, 300);
+        waitFrame.setResizable(false);
+        waitFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        waitFrame.setLayout(null);
+        waitFrame.setVisible(true);
+        waitFrame.setLocationRelativeTo(null);
+
+        JPanel waitPanel = new JPanel();
+        waitPanel.setSize(500, 500);
+        waitPanel.setLayout(null);
+        waitPanel.setBackground(Color.WHITE);
+        waitFrame.add(waitPanel);
+
+        JLabel waitLabel = new JLabel("waiting for client");
+        waitLabel.setBounds(85, 25, 500, 40);
+        waitPanel.add(waitLabel);
+        //TODO
+    }
+
+
+    public void gameGUI(int[] pZufalls){
+        zufalls = pZufalls;
+        System.out.println("Succesfully connectet - " + Arrays.toString(pZufalls));
+        GameGUI = new GameGUI(this);
+        GUIFrame = new GUIFrame(this);
+        GameGUI.RoundNumber = 1;
+        getRound();
+        waitFrame.dispose();
+    }
     public void initEndGame(){
+        network.sendPoints(Points);
+        int Pointsgeger = network.receivePoints();
+        System.out.println("E: "+Points+ " G:"+Pointsgeger);
         GUIFrame.GUIFramedispose();
         EndGameGUI = new EndGameGUI(Points, anzRunden);
     }
@@ -44,7 +90,7 @@ public class GameControl {
         GameGUI.LocPosX = (int)pLocPos.getX();
         GameGUI.LocPosY = (int)pLocPos.getY();
     }
-    private int[] selectRandomLocation(int pAnzRunden){
+    public int[] selectRandomLocation(int pAnzRunden){
         if(pAnzRunden>db.returnAnzlocations()){
             pAnzRunden = db.returnAnzlocations();
         }
@@ -52,6 +98,7 @@ public class GameControl {
         int pzufalls[] = new int[pAnzRunden];
         for(int i = 0; i<pAnzRunden; i++) {
             pzufalls[i] = zufall.nextInt(33);
+            //TODO
             while(pzufalls[i]==0){
                 pzufalls[i] = zufall.nextInt(33);
             }
@@ -69,7 +116,6 @@ public class GameControl {
             }
             z++;
         }
-        GameGUI.RoundNumber = 1;
         return pzufalls;
     }
     private int getRandomLocation(int pRoundNumber){
