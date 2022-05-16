@@ -11,7 +11,7 @@ public class GameGUI extends JPanel {
     int x, y, LocPosX, LocPosY, RoundNumber;
     GameControl GameControl;
     Image Picture;
-    JPanel UIPannnel, EndGamePanel;
+    JPanel UIPannnel;
     JButton setLocation, nextLocation, seePicture, seeMap;
     JLabel LPoints, LHeadOne, LRound, LMetersAway, LZwischenPoints;
     Boolean playing = false, finRound = false;
@@ -144,8 +144,12 @@ public class GameGUI extends JPanel {
         g2D.drawImage(Picture, 0, 0,null);
         //1200, 815
         if (seeMap.isVisible() == true) {
+            g2D.setColor(Color.WHITE);
             g2D.fill(r = new Rectangle(0, 0, 5, 5));
-        } else g2D.fill(r = new Rectangle(x, y, 5, 5));
+        } else{
+            g2D.setColor(Color.BLACK);
+            g2D.fill(r = new Rectangle(x, y, 5, 5));
+        }
         if (finRound == true) {
             g2D.setColor(Color.RED);
             g2D.fill(new Rectangle(LocPosX, LocPosY, 5, 5));

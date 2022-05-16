@@ -17,6 +17,7 @@ public class Client implements Network{
 
     public Client(String pIPAdresse, StartGUI sGUI){
         server = new Socket();
+        System.out.println(pIPAdresse);
         try {
             server.connect(new InetSocketAddress(pIPAdresse, 5000));
             gControl = new GameControl(new BigInteger(getMessage()).intValue(), this);

@@ -6,13 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.Random;
-//TODO
-//Is ready funktion (+ Position gedückt (Anderen Vektor von gegener malen))
-//IPadresse anzeigen (netzwerk fenster)
-//waiting screen fixen
 
 public class GameControl {
-    JFrame waitFrame;
     GUIFrame GUIFrame;
     GameGUI GameGUI;
     DataBase db;
@@ -28,12 +23,6 @@ public class GameControl {
         db = new DataBase();
         nGUI = new NetGUI();
         addToServerGUI("Connection to Database successful");
-        //pausenBildschirm();
-    }
-
-    public DataBase getDB(){return db;}
-    public GUIFrame getGUIFrame(){
-        return GUIFrame;
     }
     public GameGUI getGameGUI(){
         return GameGUI;
@@ -41,34 +30,8 @@ public class GameControl {
     public JPanel getUIPanel(){
         return GameGUI.UIPannnel;
     }
-    public JPanel getEndGamePanel(){
-        return GameGUI.EndGamePanel;
-    }
-
     public int getAnzahlRunden(){
         return anzRunden;
-    }
-
-    public void pausenBildschirm(){
-        System.out.println("waiting...");
-        waitFrame = new JFrame("ArmAGuessr");
-        waitFrame.setSize(500, 300);
-        waitFrame.setResizable(false);
-        waitFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        waitFrame.setLayout(null);
-        waitFrame.setVisible(true);
-        waitFrame.setLocationRelativeTo(null);
-
-        JPanel waitPanel = new JPanel();
-        waitPanel.setSize(500, 500);
-        waitPanel.setLayout(null);
-        waitPanel.setBackground(Color.WHITE);
-        waitFrame.add(waitPanel);
-
-        JLabel waitLabel = new JLabel("waiting for client");
-        waitLabel.setBounds(85, 25, 500, 40);
-        waitPanel.add(waitLabel);
-        //TODO
     }
 
 
@@ -80,7 +43,6 @@ public class GameControl {
         GUIFrame = new GUIFrame(this);
         GameGUI.RoundNumber = 1;
         getRound();
-        //waitFrame.dispose();
     }
     public int[] GetAndSendCoords(int x, int y){
         int[] pCoords = new int[2];
@@ -93,7 +55,6 @@ public class GameControl {
     public void initEndGame(){
         network.sendPoints(Points);
         int Pointsgeger = network.receivePoints();
-        System.out.println("E: "+Points+ " G:"+Pointsgeger);
         GUIFrame.GUIFramedispose();
         Boolean pWinner;
         if(Points > Pointsgeger){

@@ -19,6 +19,9 @@ public class Server implements Network{
         gControl.addToServerGUI("IP Adresse: "+getIPAdresse());
         System.out.println(getIPAdresse());
         gControl.setNetworkTitle("Server");
+        new Thread(this::connect).start();
+    }
+    public void connect(){
         try {
             ServerSocket serverSocket = new ServerSocket(5000);
             getIPAdresse();
