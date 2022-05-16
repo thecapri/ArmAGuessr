@@ -19,6 +19,7 @@ public class GameGUI extends JPanel {
     Font titleFont = new Font("Verdana", Font.BOLD, 20);
     Font normalFont = new Font("Verdana", Font.BOLD, 12);
     Rectangle r;
+    int[] EnemyCoords = new int[2];
 
     public GameGUI(GameControl pGameControl){
         GameControl = pGameControl;
@@ -71,15 +72,20 @@ public class GameGUI extends JPanel {
                 if(RoundNumber > GameControl.anzRunden){
                     nextLocation.setText("Go to End");
                 }
+                GameControl.addToServerGUI("waiting for opponent");
                 setLocation.setVisible(false);
-                nextLocation.setVisible(true);
                 seePicture.setVisible(false);
                 System.out.println("Eingeloggte Position: "+x+", "+ y);
                 playing = false;
                 finRound = true;
+                EnemyCoords = GameControl.GetAndSendCoords(x,y);
+                GameControl.addToServerGUI("Ready");
                 repaint();
                 GameControl.berechneEntfernung();
+
+                nextLocation.setVisible(true);
             }else if(e.getSource()==nextLocation){
+                //EnemyCoords = GameControl.GetAndSendCoords(x,y);
                 //TODO
                 if(RoundNumber > GameControl.anzRunden){
                     GameControl.initEndGame();
@@ -144,6 +150,11 @@ public class GameGUI extends JPanel {
             g2D.setColor(Color.RED);
             g2D.fill(new Rectangle(LocPosX, LocPosY, 5, 5));
             g2D.drawLine(x + 2, y + 5, LocPosX + 2, LocPosY);
+        }
+        if(setLocation.isVisible() == false && seePicture.isVisible() == false && seeMap.isVisible() == false) {
+            g2D.setColor(Color.GREEN);
+            g2D.fill(new Rectangle(EnemyCoords[0], EnemyCoords[1], 5, 5));
+            g2D.drawLine(EnemyCoords[0] + 2, EnemyCoords[1] + 5, LocPosX + 2, LocPosY);
         }
     }
     private void createUI(){

@@ -12,17 +12,18 @@ import java.nio.ByteBuffer;
 
 public class Client implements Network{
     Socket server;
+    GameControl gControl;
 
 
     public Client(String pIPAdresse, StartGUI sGUI){
-        System.out.println("Client");
         server = new Socket();
         try {
             server.connect(new InetSocketAddress(pIPAdresse, 5000));
-            GameControl gControl = new GameControl(new BigInteger(getMessage()).intValue(), this);
+            gControl = new GameControl(new BigInteger(getMessage()).intValue(), this);
             sGUI.setGameControl(gControl);
             int[] zufall = byte2int(getMessage());
             gControl.gameGUI(zufall);
+            gControl.setNetworkTitle("Client");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -39,7 +40,7 @@ public class Client implements Network{
                     .array();
             server.getOutputStream().write(out);
         } catch (IOException e) {
-            System.out.println("Could not send Message to " + server.getInetAddress().getHostName());
+            gControl.addToServerGUI("Could not send Message to " + server.getInetAddress().getHostName());
         }
     }
 
@@ -86,7 +87,21 @@ public class Client implements Network{
         }
         return dst;
     }
+    private byte[] convertIntegersToBytes (int[] integers) {
+        if (integers != null) {
+            byte[] outputBytes = new byte[integers.length * 4];
 
+            for(int i = 0, k = 0; i < integers.length; i++) {
+                int integerTemp = integers[i];
+                for(int j = 0; j < 4; j++, k++) {
+                    outputBytes[k] = (byte)((integerTemp >> (8 * j)) & 0xFF);
+                }
+            }
+            return outputBytes;
+        } else {
+            return null;
+        }
+    }
 
     @Override
     public void sendPoints(int pPoints) {
@@ -97,6 +112,21 @@ public class Client implements Network{
     public int receivePoints() {
         try {
             return new BigInteger(getMessage()).intValue();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void sendCoords(int[] pCoords) {
+        addLenAndSendMessage(convertIntegersToBytes(pCoords));
+
+    }
+
+    @Override
+    public int[] receiveCoords() {
+        try {
+            return byte2int(getMessage());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

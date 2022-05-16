@@ -5,20 +5,23 @@ import game.GameControl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
+import java.util.Enumeration;
 
 
 public class Server implements Network{
     Socket client;
+    GameControl gControl;
 
     public Server(int pRundenAnzahl){
-        GameControl gControl = new GameControl(pRundenAnzahl, this);
-        System.out.println("Server");
+        gControl = new GameControl(pRundenAnzahl, this);
+        gControl.addToServerGUI("IP Adresse: "+getIPAdresse());
+        System.out.println(getIPAdresse());
+        gControl.setNetworkTitle("Server");
         try {
             ServerSocket serverSocket = new ServerSocket(5000);
+            getIPAdresse();
             client = serverSocket.accept();
             addLenAndSendMessage(BigInteger.valueOf(gControl.getAnzahlRunden()).toByteArray());
             int[] zufall = gControl.selectRandomLocation(gControl.getAnzahlRunden());
@@ -41,7 +44,7 @@ public class Server implements Network{
 
             client.getOutputStream().write(out);
         } catch (IOException e) {
-            System.out.println("Could not send Message to " + client.getInetAddress().getHostName());
+            gControl.addToServerGUI("Could not send Message to " + client.getInetAddress().getHostName());
         }
     }
 
@@ -56,7 +59,29 @@ public class Server implements Network{
 
         return message;
     }
+    public String getIPAdresse(){
+        String ip;
+        try {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface iface = interfaces.nextElement();
+                // filters out 127.0.0.1 and inactive interfaces
+                if (iface.isLoopback() || !iface.isUp())
+                    continue;
 
+                Enumeration<InetAddress> addresses = iface.getInetAddresses();
+                while(addresses.hasMoreElements()) {
+                    InetAddress addr = addresses.nextElement();
+                    ip = addr.getHostAddress();
+                    return ip;
+                }
+            }
+        } catch (SocketException e) {
+            throw new RuntimeException(e);
+
+        }
+        return "Fehler";
+    }
     private boolean tryReadUntilBufferFull(InputStream inputStream, byte[] buffer) {
         if (buffer.length == 0)
             return false;
@@ -88,6 +113,22 @@ public class Server implements Network{
             return null;
         }
     }
+    public int[] byte2int(byte[]src) {
+        int dstLength = src.length >>> 2;
+        int[]dst = new int[dstLength];
+
+        for (int i=0; i<dstLength; i++) {
+            int j = i << 2;
+            int x = 0;
+            x += (src[j++] & 0xff) << 0;
+            x += (src[j++] & 0xff) << 8;
+            x += (src[j++] & 0xff) << 16;
+            x += (src[j++] & 0xff) << 24;
+            dst[i] = x;
+        }
+        return dst;
+    }
+
 
     @Override
     public void sendPoints(int pPoints) {
@@ -102,4 +143,19 @@ public class Server implements Network{
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public void sendCoords(int[] pCoords) {
+        addLenAndSendMessage(convertIntegersToBytes(pCoords));
+    }
+
+    @Override
+    public int[] receiveCoords() {
+        try {
+            return byte2int(getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

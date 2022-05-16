@@ -5,22 +5,26 @@ import netz.Server;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class StartGUI {
     JFrame titleScreen;
-    JPanel mainTitle, settings, afterPlay, joinSession, hostSession;
-    JLabel title1, title2, settingsTitle, seeHowToPlay, afterPlayLabel, joinSessionLabel, hostSessionLabel;
+    JPanel mainTitle, settings, afterPlay, joinSession, hostSession, waitPanel;
+    JLabel title1, title2, settingsTitle, seeHowToPlay, afterPlayLabel, joinSessionLabel, hostSessionLabel, waitLabel, IPAdressenLabel;
     Font titleFont1, titleFont2, normalFont;
-    JButton playButton, settingsButton, backButton, hostButton, joinButton, sendIPAdresse, sendRoundNumber;
-    JTextField setIPAdresse, setRoundNumber;
+    JButton playButton, settingsButton, backButton, hostButton, joinButton, sendIPAdresse, sendRoundNumber, copieIP;
+    JTextField setIPAdresse, setRoundNumber, IPTxt;
     FocusListener fListener;
     String IPAdresse;
     int RoundNumber;
     GameControl gameControl;
     StartGUI startGUI = this;
+    Server pServer;
 
     public StartGUI() {
         try {
@@ -58,8 +62,8 @@ public class StartGUI {
                 } else if (e.getSource() == sendIPAdresse) {
                     IPAdresse = setIPAdresse.getText();
                     new Client(IPAdresse, startGUI);
-                    titleScreen.dispose();
                     System.out.println("IPAdresse Entered: " + IPAdresse);
+                    titleScreen.dispose();
                 } else if (e.getSource() == sendRoundNumber) {
                     Boolean isNumber = false;
                     try {
@@ -71,8 +75,12 @@ public class StartGUI {
                     if (!isNumber) {
                         RoundNumber = 3;
                     }
-                    new Server(RoundNumber);
+                    pServer = new Server(RoundNumber);
                     titleScreen.dispose();
+                }else if(e.getSource()==copieIP){
+                    StringSelection stringSelection = new StringSelection(IPTxt.getText());
+                    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                    clipboard.setContents(stringSelection, null);
                 }
             }
         };
@@ -216,6 +224,7 @@ public class StartGUI {
         sendRoundNumber.addActionListener(plistener);
         hostSession.add(sendRoundNumber);
 
+
         /**
          * JOIN SESSION
          */
@@ -280,5 +289,38 @@ public class StartGUI {
     }
     public void setGameControl(GameControl pGameControl){
         gameControl = pGameControl;
+    }
+    public void startWaitscreen(){
+        waitPanel = new JPanel();
+        waitPanel.setSize(500, 500);
+        waitPanel.setLayout(null);
+        waitPanel.setBackground(Color.WHITE);
+        waitPanel.setVisible(false);
+        titleScreen.add(waitPanel);
+
+        waitLabel = new JLabel("Waiting for client");
+        waitLabel.setFont(titleFont1);
+        waitLabel.setBounds(20, 35, 500, 40);
+        waitPanel.add(waitLabel);
+
+        IPAdressenLabel = new JLabel("Your IP Adresse");
+        IPAdressenLabel.setBounds(135, 100, 260, 40);
+        IPAdressenLabel.setFont(normalFont);
+        waitPanel.add(IPAdressenLabel);
+
+
+        IPTxt = new JTextField(pServer.getIPAdresse());
+        IPTxt.setBounds(105, 140, 260, 40);
+        IPTxt.setBackground(Color.WHITE);
+        IPTxt.setHorizontalAlignment(JTextField.CENTER);
+        IPTxt.setEditable(false);
+        waitPanel.add(IPTxt);
+
+        copieIP = new JButton("Copie");
+        copieIP.setBounds(183,187,100,40);
+        copieIP.setFont(normalFont);
+        copieIP.setBackground(Color.WHITE);
+        //copieIP.addActionListener(plistener);
+        waitPanel.add(copieIP);
     }
 }

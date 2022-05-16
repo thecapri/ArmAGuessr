@@ -21,11 +21,14 @@ public class GameControl {
     int[] zufalls;
     EndGameGUI EndGameGUI;
     Network network;
+    NetGUI nGUI;
     public GameControl(int pAnzahlRounds, Network pNetwork){
         network = pNetwork;
         anzRunden = pAnzahlRounds;
         db = new DataBase();
-        pausenBildschirm();
+        nGUI = new NetGUI();
+        addToServerGUI("Connection to Database successful");
+        //pausenBildschirm();
     }
 
     public DataBase getDB(){return db;}
@@ -71,24 +74,43 @@ public class GameControl {
 
     public void gameGUI(int[] pZufalls){
         zufalls = pZufalls;
-        System.out.println("Succesfully connectet - " + Arrays.toString(pZufalls));
+        addToServerGUI("Succesfully connectet - "+ Arrays.toString(pZufalls));
+        addToServerGUI("number of rounds: "+anzRunden);
         GameGUI = new GameGUI(this);
         GUIFrame = new GUIFrame(this);
         GameGUI.RoundNumber = 1;
         getRound();
-        waitFrame.dispose();
+        //waitFrame.dispose();
+    }
+    public int[] GetAndSendCoords(int x, int y){
+        int[] pCoords = new int[2];
+        pCoords[0] = x;
+        pCoords[1] = y;
+        network.sendCoords(pCoords);
+        pCoords = network.receiveCoords();
+        return pCoords;
     }
     public void initEndGame(){
         network.sendPoints(Points);
         int Pointsgeger = network.receivePoints();
         System.out.println("E: "+Points+ " G:"+Pointsgeger);
         GUIFrame.GUIFramedispose();
-        EndGameGUI = new EndGameGUI(Points, anzRunden);
+        Boolean pWinner;
+        if(Points > Pointsgeger){
+            pWinner = true;
+        }else pWinner = false;
+        EndGameGUI = new EndGameGUI(Points, anzRunden, Pointsgeger, pWinner);
     }
     private void setLocPos(int pLocationNumber){
         Point pLocPos = db.readXandY(pLocationNumber);
         GameGUI.LocPosX = (int)pLocPos.getX();
         GameGUI.LocPosY = (int)pLocPos.getY();
+    }
+    public void addToServerGUI(String pText){
+        nGUI.addToScrollpane(pText);
+    }
+    public void setNetworkTitle(String pTitle){
+        nGUI.setNewTitle(pTitle);
     }
     public int[] selectRandomLocation(int pAnzRunden){
         if(pAnzRunden>db.returnAnzlocations()){
@@ -97,10 +119,9 @@ public class GameControl {
         int z =0;
         int pzufalls[] = new int[pAnzRunden];
         for(int i = 0; i<pAnzRunden; i++) {
-            pzufalls[i] = zufall.nextInt(33);
-            //TODO
+            pzufalls[i] = zufall.nextInt(pAnzRunden);
             while(pzufalls[i]==0){
-                pzufalls[i] = zufall.nextInt(33);
+                pzufalls[i] = zufall.nextInt(pAnzRunden);
             }
         }
         while(z<=pAnzRunden/5) {
@@ -157,7 +178,7 @@ public class GameControl {
     }
     private void reSafeDB(){
         db.saveNewLocation("Bank auf Zero One", "src/Locations/BankZero.jpg", 807, 264);
-        db.saveNewLocation("AeroClub Airfield(KerosinDestille)","src/Locations/ACAirfield.png",418, 542);
+        db.saveNewLocation("AeroClub Airfield(KerosinDestille)","src/Locations/ACAirfield.jpg",418, 542);
         db.saveNewLocation("Kavala Burg","src/Locations/KavalaBurg.png",64, 496);
         db.saveNewLocation("Selekano Airfield","src/Locations/SelekanoAirfield.png",812, 725);
         db.saveNewLocation("Ghost Hotel","src/Locations/GhostHotel.png",837, 194);

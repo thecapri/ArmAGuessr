@@ -6,14 +6,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class EndGameGUI extends JFrame {
-    int Points, AnzRunden;
+    int Points, AnzRunden, EnemyPoints;
+    Boolean winner;
     Font titleFont = new Font("Verdana", Font.BOLD, 35);
     Font normalFont = new Font("Verdana", Font.BOLD, 12);
-    JLabel LEndPoints, LEndTitle, LEndRounds;
+    JLabel LEndPoints, LEndTitle, LEndRounds, LEnemyEndPoints, LWinner;
     JPanel endPanel;
     JButton EndButton;
 
-    public EndGameGUI(int pPoints, int pAnzRunden){
+    public EndGameGUI(int pPoints, int pAnzRunden, int pEnemyPoints,Boolean pWinner){
+        winner = pWinner;
+        EnemyPoints = pEnemyPoints;
         Points = pPoints;
         AnzRunden = pAnzRunden;
         init();
@@ -39,12 +42,25 @@ public class EndGameGUI extends JFrame {
         endPanel.add(LEndTitle);
 
         LEndPoints = new JLabel("Points: "+Points+"/"+AnzRunden*1000);
-        LEndPoints.setBounds(165,135,250,25);
+        LEndPoints.setBounds(55,135,250,25);
         LEndPoints.setFont(normalFont);
         endPanel.add(LEndPoints);
 
+        LEnemyEndPoints = new JLabel("Enemy Points: "+EnemyPoints+"/"+AnzRunden*1000);
+        LEnemyEndPoints.setBounds(250,135,250,25);
+        LEnemyEndPoints.setFont(normalFont);
+        endPanel.add(LEnemyEndPoints);
+
+        LWinner = new JLabel();
+        if(winner == true){
+            LWinner.setText("Du hast Gewonnen");
+        }else LWinner.setText("Du hast Verloren");
+        LWinner.setBounds(173,158,250,25);
+        LWinner.setFont(normalFont);
+        endPanel.add(LWinner);
+
         LEndRounds = new JLabel("Anzahl Runden: "+AnzRunden);
-        LEndRounds.setBounds(165,115,250,25);
+        LEndRounds.setBounds(173,95,250,25);
         LEndRounds.setFont(normalFont);
         endPanel.add(LEndRounds);
 
