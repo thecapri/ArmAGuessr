@@ -1,14 +1,26 @@
 # Arma Guessr
 
-Spiel funktioniert nur im localen Netzwerk
+#### Spiel funktioniert nur im localen Netzwerk
 
 Im Spiel bekommt der Spieler ein zufälliges Bild aus
 dem Computer Spiel Arma 3 angezeigt und muss anhand der Hinweise, die das Bild ihm gibt, 
 herausfinden, wo dieses Foto aufgenommen wurde.
 
-### Startbildschirm:
+### Startbildschirm
 
 <img src="READMEpictures/Start.PNG" width="50%">
+
+Mit dem "Play" Button kommt man zur Auswahlmenü für Spieler und Host.
+Durch Drücken des "What is" Buttons bekommt man eine kurze Erklärung was Geoguessr überhaupt ist. (Siehe Oben)
+
+### What is Screen
+
+<img src="READMEpictures/WhatIs.PNG" width="50%">
+
+Kurze ERklärung zu GeoGuessr.
+Spieler kommt zurück in den Start Bildschirm durhc betätigen des "Back" Buttons.
+Es kann beliebig oft zwischen dem "Startbildschirm" und dem "What is Screen" gewechselt werden.
+
 
 ### Select Session Screen
 
