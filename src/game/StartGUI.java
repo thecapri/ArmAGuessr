@@ -145,7 +145,7 @@ public class StartGUI {
         playButton.addActionListener(plistener);
         mainTitle.add(playButton);
 
-        settingsButton = new JButton("How To");
+        settingsButton = new JButton("What is");
         settingsButton.setBounds(170, 165, 150, 40);
         settingsButton.setFont(normalFont);
         settingsButton.setBackground(Color.WHITE);
@@ -283,13 +283,10 @@ public class StartGUI {
         seeHowToPlay.setWrapStyleWord(true);
         seeHowToPlay.setBackground(Color.WHITE);
         settings.add(seeHowToPlay);
-        seeHowToPlay.append("Host decides How many Rounds there are to play \n"
-                            +"Join enters the Round with Host IP-Adresse\n"
-                            +"Guess where Pictures are by clicking on map\n"
-                            +"Lock Guess by clicking setPosition\n"
-                            +"Change between Map and Picture through buttons\n"
-                            +"Get to next Round through Next Location Button\n"
-                            +"Game Ends after all Rounds palyed and winner is decided by Points");
+        seeHowToPlay.append("Im Spiel bekommt der Spieler ein zufälliges Panorama\n" +
+                "aus dem Computerspiel Arma 3 angezeigt\n " +
+                "und muss anhand der Hinweise, die das Bild ihm gibt, herausfinden,\n " +
+                "wo dieses Foto aufgenommen wurde.");
 
     }
     public void setGameControl(GameControl pGameControl){
