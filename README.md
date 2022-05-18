@@ -64,6 +64,9 @@ Der Schwarze Punkt symbolisiert hierbei die Spielerposition und der Rote Punkt d
 Die Rote Gerade zeigt den Weg zwischen Spieler Punkt und Endpunkt.
 Der Grüne Punkt zeigt den vom Gegner gesezten Punkt und die Grüne gerade den Weg zwischen Gegner Punkt und Endpunkt.
 
+Mit drückens des "Next Location" Buttons wird das nächste Bild im "See Picture Screen" angezeigt und eine neue Runde beginnt.
+Das Spiel verläuft jede Runde gleich (Startet beim "See Picture Screen" und ended beim "After Round Screen").
+
 ### End Screen
 
 <img src="READMEpictures/GameEnded.PNG" width="50%">
