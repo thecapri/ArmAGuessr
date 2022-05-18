@@ -264,7 +264,7 @@ public class StartGUI {
         settings.setVisible(false);
         titleScreen.add(settings);
 
-        settingsTitle = new JLabel("How to Play");
+        settingsTitle = new JLabel("What is it?");
         settingsTitle.setBounds(80, 23, 300, 40);
         settingsTitle.setFont(titleFont1);
         settings.add(settingsTitle);
