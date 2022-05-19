@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="ArmAGuessr:jar">
+  <artifact type="jar" build-on-make="true" name="ArmAGuessr:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/ArmAGuessr_jar</output-path>
     <root id="archive" name="ArmAGuessr.jar">
       <element id="module-output" name="ArmAGuessr" />
