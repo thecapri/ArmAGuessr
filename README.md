@@ -89,4 +89,4 @@ Es wird auch angezeigt wer das Spiel gewonenn hat.
 
 Mit dem Knopf "Exit" kann man die Anwendung im Anschluss beenden.
 
-# All copywright reserved to @FabianusMaximus
+# All copywright reserved to @capri
